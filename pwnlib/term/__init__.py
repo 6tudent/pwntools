@@ -1,20 +1,5 @@
 import sys
 
-from . import completer
-from . import key
-from . import keymap
-from . import readline
-from . import term
-from . import termcap
-from . import text
-
-# Re-exports (XXX: Are these needed?)
-output = term.output
-width =  term.width
-height = term.height
-getkey = key.get
-Keymap = keymap.Keymap
-
 #: This is True exactly when we have taken over the terminal using :func:`init`.
 term_mode = False
 
@@ -51,6 +36,23 @@ def can_init():
         frame = frame.f_back
 
     return True
+
+
+if can_init():
+    from . import completer
+    from . import key
+    from . import keymap
+    from . import readline
+    from . import term
+    from . import termcap
+    from . import text
+
+    # Re-exports (XXX: Are these needed?)
+    output = term.output
+    width =  term.width
+    height = term.height
+    getkey = key.get
+    Keymap = keymap.Keymap
 
 
 def init():

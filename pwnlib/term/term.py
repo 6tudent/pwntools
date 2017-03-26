@@ -156,9 +156,10 @@ def put(s):
 def flush(): fd.flush()
 
 def do(c, *args):
-    s = termcap.get(c, *args)
-    if s:
-        put(s)
+    if term_mode:
+        s = termcap.get(c, *args)
+        if s:
+            put(s)
 
 def goto((r, c)):
     do('cup', r - scroll + height - 1, c)

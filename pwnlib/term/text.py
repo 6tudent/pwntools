@@ -2,6 +2,8 @@ import functools
 import sys
 import types
 
+import __init__
+
 from . import termcap
 
 
@@ -23,7 +25,10 @@ class Module(types.ModuleType):
     def __init__(self):
         self.__file__ = __file__
         self.__name__ = __name__
-        self.num_colors = termcap.get('colors', default = 8)
+        if __init__.term_mode:
+            self.num_colors = termcap.get('colors', default = 8)
+        else:
+            self.num_colors = 2
         self.has_bright = self.num_colors >= 16
         self.has_gray = self.has_bright
         self.when = 'auto'
@@ -43,7 +48,10 @@ class Module(types.ModuleType):
                      ('bold'     , 'bold'),
                      ('underline', 'smul'),
                      ('reverse'  , 'rev')]:
-            s = termcap.get(y)
+	    if __init__.term_mode:
+		s = termcap.get(y)
+            else:
+                s = ''
             self._attributes[x] = s
         self._cache = {}
 
@@ -56,10 +64,16 @@ class Module(types.ModuleType):
         self._when = eval_when(val)
 
     def _fg_color(self, c):
-        return termcap.get('setaf', c) or termcap.get('setf', c)
+	if __init__.term_mode:
+            return termcap.get('setaf', c) or termcap.get('setf', c)
+        else:
+            return ''
 
     def _bg_color(self, c):
-        return termcap.get('setab', c) or termcap.get('setb', c)
+	if __init__.term_mode:
+            return termcap.get('setab', c) or termcap.get('setb', c)
+        else:
+            return ''
 
     def _decorator(self, desc, init):
         def f(self, s, when = None):

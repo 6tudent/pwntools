@@ -200,6 +200,8 @@ def _init_ti_table():
     global _ti_table
     _ti_table = []
     for fname, name in zip(kc.STRFNAMES, kc.STRNAMES):
+        if not term_mode:
+            continue
         seq = termcap.get(name)
         if not seq:
             continue
